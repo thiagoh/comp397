@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check 4-In-A-Row Win Condition by Lines </title>
+</head>
+<body onload="init();">
+<canvas id="canvas" width="1000" height="800"></canvas>
+</body>
+<script>
+	const NR_ROWS=6;
+	const NR_COLS=7;
+	//
+	// test cases
+	//
+	var boardRow1=[
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,2,0,0,0],
+	 [0,0,0,1,2,0,0],
+	 [2,1,0,2,1,1,1],
+	 [2,1,1,1,2,2,1],
+	 [2,1,1,1,1,2,2],	 
+	];
+	var boardRow2=[
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,2,0,0,0],
+	 [0,0,0,1,2,0,0],
+	 [2,1,0,2,1,1,1],
+	 [2,1,2,2,2,2,1],
+	 [2,2,1,1,1,2,2],	 
+	];
+	var boardCol1=[
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,2,0,0,0],
+	 [0,1,0,1,2,0,0],
+	 [2,1,0,2,1,1,1],
+	 [2,1,1,1,2,2,1],
+	 [2,1,0,1,1,2,2],	 
+	];
+	var boardCol2=[
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,2,0,0,0],
+	 [0,0,0,2,2,0,0],
+	 [2,1,0,2,1,1,1],
+	 [2,1,0,2,2,2,1],
+	 [2,2,1,1,1,2,2],	 
+	];
+	var boardFDiag1=[
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,2,0,0,0],
+	 [0,0,0,1,2,1,0],
+	 [2,1,0,2,1,1,1],
+	 [2,1,1,1,2,2,1],
+	 [2,2,1,1,2,2,2],	 
+	];
+	var boardFDiag2=[
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,2,0,0,0],
+	 [1,0,0,1,2,0,0],
+	 [2,1,0,2,1,1,1],
+	 [2,1,2,1,2,2,1],
+	 [2,2,1,1,2,2,2],	 
+	];
+	var boardBDiag1=[
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,2,0,0,0],
+	 [1,0,0,1,2,0,0],
+	 [2,1,0,2,1,1,1],
+	 [2,1,1,1,2,2,1],
+	 [2,2,1,1,2,2,2],	 
+	];
+	var boardBDiag2=[
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,2,0,0,0],
+	 [1,0,2,1,2,0,0],
+	 [2,1,1,2,1,1,1],
+	 [2,1,1,1,2,2,1],
+	 [2,2,1,1,2,2,2],	 
+	];
+	//var board=boardRow1;
+	//var board=boardRow2;
+	//var board=boardCol1;
+	//var board=boardCol2;
+	//var board=boardFDiag1;
+	//var board=boardFDiag2;
+	//var board=boardBDiag1;
+	var board=boardBDiag2;
+
+    function init() {
+		let player=1;
+		//	function checkForWinByLines(board, lineEnds, player){
+		let win=checkForWinByLines(board, lineEnds, player);
+		console.log("win="+win+", player:"+player);
+    }
+
+	var lineEnds=
+		[ //[sr,sc,er,ec],...  or [StartRow, StartCol, EndRow, EndCol]
+		  [3,0,0,3], // Start of Forward Diagonal (k=0)
+		  [4,0,0,4],
+		  [5,0,0,5],
+		  [5,1,0,6],
+		  [5,2,1,6],
+		  [5,3,2,6],
+		  [2,0,5,3], // Start of Backward Diagonal (k=6)
+		  [1,0,5,4],
+		  [0,0,5,5],
+		  [0,1,5,6],
+		  [0,2,4,6],
+		  [0,3,3,6],
+		  [0,0,0,6], // Start of Rows (k=12)   
+		  [1,0,1,6], // You could do add rows also like so:
+		  [2,0,2,6], // for(let r=0;r<6;r++)lineEnds.push([r,0,r,6]);
+		  [3,0,3,6],
+		  [4,0,4,6],
+		  [5,0,5,6],
+		  [0,0,5,0], // Start of Columns (k=18)
+		  [0,1,5,1], // You could do add rows also like so:  
+		  [0,2,5,2], // for(let c=0;c<7;c++)lineEnds.push([0,c,5,c]);
+		  [0,3,5,3],
+		  [0,4,5,4],
+		  [0,5,5,5],
+		  [0,6,5,6]
+		 ];
+	console.log("lineEnds:"+lineEnds);
+    function getLine(board, lineEnds,k){
+		let line=[],
+		sr=lineEnds[k][0],
+		sc=lineEnds[k][1],
+		er=lineEnds[k][2],
+		ec=lineEnds[k][3],
+		dirR = +1;
+		if(sr>er){
+			dirR = -1;
+		}else if (sr==er){
+			dirR = 0;
+		}
+		//console.log("getLine:k="+k+",sr,sc,er,ec="+sr+","+sc+","+er+","+ec+",dirR="+dirR);
+		if(k<18){
+			for(let c=sc,r=sr;c<=ec;c++,r += dirR){ //works for diagonals and for rows but not for cols
+				line.push(board[r][c]);
+			}
+		} else {
+			for(let c=sc,r=sr;r<=er;r++){ //works for cols only
+				line.push(board[r][c]);
+			}
+		
+		}
+		return line;
+	}
+	function getMaxRun(md,player){
+		var maxRun=0,run=0;
+		md.forEach(e => { 
+				if (e == player) { 
+					run++;
+					if(run>maxRun){
+						maxRun=run;
+					}
+				} else { 
+					run=0;
+				}
+			});
+		return maxRun;
+	}
+	function checkForWinByLines(board, lineEnds, player){
+		var win=false;
+		for(var k=0;k<lineEnds.length;k++){
+			var md=getLine(board,lineEnds,k);
+			console.log("k:"+k+",player:"+player+",md:"+md);
+			var maxRun=getMaxRun(md,player);
+			if(maxRun>=4){
+				return true;
+			}
+		}
+		return false;
+	}	
+</script>
+</html>

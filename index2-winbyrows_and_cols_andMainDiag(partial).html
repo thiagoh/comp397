@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="../lib/easeljs-0.7.1.min.js"></script>
+</head>
+
+<body onload="init()">
+
+<canvas id="canvas" width="1000" height="800"></canvas>
+
+</body>
+
+<script>
+	const NR_ROWS=6;
+	const NR_COLS=7;
+	/*
+	var board=[
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,2,0,0,0],
+	 [0,0,0,2,0,0,0],
+	 [0,0,0,2,1,1,1],
+	 [2,1,2,2,2,2,1],
+	 [1,1,1,1,2,2,2],	 
+	];
+	*/
+	var board=[
+	 [0,0,0,0,0,0,0],
+	 [0,0,0,2,0,0,0],
+	 [0,0,0,1,2,0,0],
+	 [0,0,0,2,1,1,1],
+	 [2,1,2,1,2,2,1],
+	 [2,2,1,1,2,2,2],	 
+	];
+	
+    function init() {
+		//var win=checkForWin(1);
+		var win=checkForWin(2);
+		console.log("win="+win);
+    }
+	function checkForWin(player){
+		var win=false, win1=false,win2=false;
+		//win=checkForWinByRows(player);
+		//console.log("win after checkForWinByRows="+win+" [player:"+player+"]");
+		
+		//win1 = checkForWinByColumns(player);
+		//console.log("win1 after checkForWinByColumns="+win1+" [player:"+player+"]");
+
+		win2 = checkForWinByMainDiagonal(player);
+		console.log("win2 after checkForWinByMainDiagonal="+win2+" [player:"+player+"]");
+		
+		win=win || win1 || win2;
+		
+		
+		
+		return win;
+	}
+	var startMainDiag=[
+		[3,0],
+		[4,0],
+		[5,0],
+		[5,1],
+		[5,2],
+		[5,3]
+	];
+	var endMainDiag=[
+		[0,3],
+		[0,4],
+		[0,5],
+		[0,6],
+		[1,6],
+		[2,6]
+	];
+	var lengthMainDiag = [4,5,6,6,5,4];
+	
+	function checkForWinByMainDiagonal(player){
+		var win=false;
+		for(var k=0;k<startMainDiag.length;k++){
+			var i0=startMainDiag[k][0];
+			var j0=startMainDiag[k][1];
+			var i1=endMainDiag[k][0];
+			var j1=endMainDiag[k][1];
+			console.log("i0,j0="+i0+","+j0);
+			console.log("i1,j1="+i1+","+j1);
+
+			console.log("main diag k,i:"+k+"," + i);
+			for(var i=i0;i<i1;i++){
+				//check for win by row i
+				for(var j=j0;j<j1;j++){
+					console.log(board[i][j]);
+				}
+			}
+			
+			for(var i=i0;i>i1;i--){
+				//check for win by diag k				
+				for(var j=j0;j<j1;j++){
+					if(board[i][j]==player){
+						console.log("k: i,j="+k+":"+i+","+j);
+						if(j1-j>=4){
+							var nr_tokens=1;
+							var ii=1;
+							for(var kk=j+1; kk< j1;k++)
+							{
+								if(board[i-ii][kk]==player)
+								{
+									nr_tokens += 1;
+									ii++;
+									console.log("nr_tokens:"+nr_tokens+", ii="+ii);
+									if(nr_tokens == 4){
+										return true;
+									}
+								}
+							}
+						} 
+						else
+						{
+							//no win here
+						}
+						
+					}
+				}
+			}
+
+		}
+
+		return win;
+	}
+
+
+
+	function checkForWinByRows(player){
+		var win=false;
+		for(var i=0;i<NR_ROWS;i++){
+			//check for win by row i
+			console.log("row:"+board[i]);
+			for(var j=0;j<NR_COLS;j++){
+				if(board[i][j]==player){
+					console.log("j="+j);
+					if(NR_COLS-j>=4){
+						var nr_tokens=1;
+						for(var k=j+1; k< NR_COLS;k++)
+						{
+							if(board[i][k]==player)
+							{
+								nr_tokens += 1;
+								console.log("nr_tokens:"+nr_tokens);
+								if(nr_tokens == 4){
+									return true;
+								}
+							}
+						}
+					} 
+					else
+					{
+						//no win here
+					}
+				}
+			}
+		}
+		return win;
+	}
+	function checkForWinByColumns(player){
+		var win=false;
+		for(var i=0;i<NR_COLS;i++){
+			//check for win by col i
+			//print out the column i
+			console.log("col:");
+			for(var j=0;j<NR_ROWS;j++){
+				console.log(board[j][i]);
+			}
+			
+			for(var j=0;j<NR_ROWS;j++){
+				if(board[j][i]==player){
+					console.log("j="+j);
+					if(NR_ROWS-j>=4){
+						var nr_tokens=1;
+						for(var k=j+1; k< NR_ROWS;k++)
+						{
+							if(board[k][i]==player)
+							{
+								nr_tokens += 1;
+								console.log("nr_tokens:"+nr_tokens);
+								if(nr_tokens == 4){
+									return true;
+								}
+							}
+						}
+					} 
+					else
+					{
+						//no win here
+					}
+				}
+			}
+		}
+		
+		
+		return win;
+	}
+	
+</script>
+</html>
