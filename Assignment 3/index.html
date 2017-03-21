@@ -3,15 +3,131 @@
 
 <head>
   <title></title>
-  <script src="../lib/easeljs-0.7.1.min.js"></script>
-  <script src="../lib/preloadjs-0.4.1.min.js"></script>
-  <script src="../lib/tweenjs-0.5.1.min.js"></script>
+  <script src="lib/easeljs-0.7.1.min.js"></script>
+  <script src="lib/preloadjs-0.4.1.min.js"></script>
+  <script src="lib/tweenjs-0.5.1.min.js"></script>
   <script src="concentration.js"></script>
 </head>
+<!-- HomeWork3: Due Apr. 04th 
+. Pick a theme for concentration game (suggestions: animals, rock bands, trees, vehicles, game heroes/villans etc.etc.)
+. Harvest 18 images for the theme.
+. Create a concentration game with three levels: Easy, Medium and Hard
+  . easy 2x2
+  . medium 4x4
+  . hard 6x6
+. Model your game as per concentration game in chapter5 of the code (as in class work, March.21st)
+
+-->
+
+<style>
+  body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 1.2em;
+  }
+  
+  .disabled {
+    opacity: 0.3;
+  }
+  
+  .hide {
+    display: none;
+  }
+  
+  #container {
+  }
+  
+  #game {
+  }
+  
+  #menu {
+  }
+
+  #menu ul {
+    list-style: none;
+  }
+  
+  #menu li {
+    cursor: pointer;
+    line-height: 2em;
+    font-size: 1.3em;
+  }
+  
+  #menu li:hover {
+    text-decoration: underline; 
+  }
+  
+  header {
+    height: 120px;
+  }
+  
+  h1 {
+    text-align: center;
+    color: green;
+    font-size: 2.5em;
+  }
+  
+  h2 {
+    font-size: 1.8em;
+  }
+  
+  h3 {
+    font-size: 1.6em;
+  }
+  
+  .fadein {
+    animation: fadein 2s ease-in;
+  }
+  
+  @keyframes fadein {
+    0% {
+      opacity: 0;
+      font-size: 2em;
+      color: black;
+    }
+    50% {
+      opacity: 1;
+      transform: rotate(+20deg);
+    }
+    85% {
+      color: coral;
+      font-size: 2.5em;
+      transform: rotate(-20deg);
+    }
+    95% {
+      font-size: 2em;
+    }
+    100% {
+      color: darkgreen;
+      font-size: 2.5em;
+      transform: rotate(0deg);
+    }
+  }
+</style>
 
 <body onload="preload()">
 
-  <canvas id="canvas" width="650" height="650" style="border: black solid 1px"></canvas>
+  <header>
+    <h1 class="fadein">Concentration GAME!</h1>
+  </header>
+  <main>
+
+    <div id="container">
+      <div id="menu">
+
+        <h3>Select the dificulty</h3>
+
+        <ul>
+          <li class="start-button disabled" onclick="startGame(2)">Easy (2x2)</li>
+          <li class="start-button disabled" onclick="startGame(4)">Medium (4x4)</li>
+          <li class="start-button disabled" onclick="startGame(6)">Hard (6x6)</li>
+        </ul>
+      </div>
+
+      <div id="game" class="hide">
+        <canvas id="canvas" width="1024" height="1200"></canvas>
+      </div>
+    </div>
+  </main>
 
 </body>
 
